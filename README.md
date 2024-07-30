@@ -16,7 +16,8 @@
 ## Użyte Technologie
 
 ### Backend
-- **Django**: Framework webowy do budowy backendu aplikacji.
+- **Django**: framework sieciowy wysokiego poziomu w języku Python.
+- **Django REST Framework**: potężny i elastyczny zestaw narzędzi do tworzenia internetowych interfejsów API.
 - **Celery & Celery Beat**: Systemy kolejkowania zadań i harmonogramu.
 - **Redis**: Szybki magazyn danych w pamięci używany do cachowania.
 - **PostgreSQL z pgvector**: Relacyjna baza danych z wsparciem dla wektorów.
