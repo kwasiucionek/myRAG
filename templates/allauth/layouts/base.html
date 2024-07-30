@@ -1,0 +1,159 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block head_title %}{% endblock head_title %}</title>
+        <!-- Bootstrap CSS -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <!-- FontAwesome CSS -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+        {% block extra_head %}{% endblock extra_head %}
+        <style>
+            .navbar {
+                margin-bottom: 20px;
+            }
+            .footer {
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                text-align: center;
+                padding: 10px;
+                background: #f8f9fa;
+                border-top: 1px solid #e7e7e7;
+            }
+            .content {
+                margin-top: 20px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .messages {
+                margin-bottom: 20px;
+                width: 100%;
+                max-width: 600px;
+            }
+            .menu-item {
+                display: flex;
+                align-items: center;
+                padding: 10px 15px;
+                margin-bottom: 5px;
+                background: #f8f9fa;
+                border-radius: 5px;
+                border: 1px solid #e7e7e7;
+                width: 100%;
+                max-width: 600px;
+            }
+            .menu-item:hover {
+                background: #e2e6ea;
+            }
+            .menu-item i {
+                margin-right: 10px;
+            }
+            .content-header {
+                margin-bottom: 20px;
+                width: 100%;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="{% url 'account_login' %}">{{ site_name|default:_('myRAG') }}</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-outline-danger" href="{% url 'account_logout' %}"><i class="fas fa-sign-out-alt"></i> {% trans "Sign Out" %}</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-outline-primary mr-2" href="{% url 'account_login' %}"><i class="fas fa-sign-in-alt"></i> {% trans "Sign In" %}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-outline-success" href="{% url 'account_signup' %}"><i class="fas fa-user-plus"></i> {% trans "Sign Up" %}</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+
+        {% block body %}
+            <div class="container content">
+                <div class="content-header">
+                    <h1 class="text-center">{% block page_title %}{% endblock page_title %}</h1>
+                </div>
+                {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div>
+                    <ul class="list-group">
+                        {% if user.is_authenticated %}
+                            {% url 'account_email' as email_url %}
+                            {% if email_url %}
+                                <li class="menu-item list-group-item">
+                                    <i class="fas fa-envelope"></i>
+                                    <a href="{{ email_url }}">{% trans "Change Email" %}</a>
+                                </li>
+                            {% endif %}
+                            {% url 'account_change_password' as change_password_url %}
+                            {% if change_password_url %}
+                                <li class="menu-item list-group-item">
+                                    <i class="fas fa-key"></i>
+                                    <a href="{{ change_password_url }}">{% trans "Change Password" %}</a>
+                                </li>
+                            {% endif %}
+                            {% url 'mfa_index' as mfa_url %}
+                            {% if mfa_url %}
+                                <li class="menu-item list-group-item">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <a href="{{ mfa_url }}">{% trans "Two-Factor Authentication" %}</a>
+                                </li>
+                            {% endif %}
+                            {% url 'usersessions_list' as usersessions_list_url %}
+                            {% if usersessions_list_url %}
+                                <li class="menu-item list-group-item">
+                                    <i class="fas fa-history"></i>
+                                    <a href="{{ usersessions_list_url }}">{% trans "Sessions" %}</a>
+                                </li>
+                            {% endif %}
+                        {% else %}
+
+                            <li class="menu-item list-group-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <a href="{% url 'mfa:mfa_authenticate' %}">{% trans "MFA Authentication" %}</a>
+                            </li>
+
+                        {% endif %}
+                    </ul>
+                </div>
+                {% block content %}{% endblock content %}
+            </div>
+        {% endblock body %}
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>&copy; {{ site_name|default:_('Krzysztof Wasiucionek') }}</p>
+        </div>
+
+        <!-- Bootstrap JS and dependencies -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        {% block extra_body %}{% endblock extra_body %}
+    </body>
+</html>

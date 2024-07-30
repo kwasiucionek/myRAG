@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load i18n allauth %}
+    <head>
+        <title>{% translate "Sign In" %} | {{ provider }}</title>
+        <meta http-equiv="refresh" content="5;URL='{{ redirect_to }}'" />
+        <!-- Bootstrap CSS -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <!-- FontAwesome CSS -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container d-flex justify-content-center align-items-center vh-100">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">{% translate "Redirecting" %}</h5>
+                    <p class="card-text">{% translate "You are being redirected, please wait a moment." %}</p>
+                    <a href="{{ redirect_to }}" class="btn btn-primary">
+                        <i class="fas fa-arrow-right"></i> {% translate "Continue" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- Bootstrap JS and dependencies -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </body>
+</html>

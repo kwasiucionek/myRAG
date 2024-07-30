@@ -1,0 +1,126 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<style>
+    .document-list {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    .document-list th, .document-list td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    .document-list th {
+        background-color: #f8f9fa;
+        font-weight: normal;
+        color: #007bff;
+    }
+    .delete-button {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+    .add-button, .pagination-button, .search-button {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        margin: 10px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+    .search-form {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .search-input {
+        padding: 8px;
+        width: 300px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        margin-right: 5px;
+    }
+    .controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+    }
+    .centered {
+        text-align: center;
+        align-items: center;
+        margin-top: 10px;
+    }
+    .sort-link {
+        color: #007bff;
+        text-decoration: none;
+    }
+    .sort-link:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="centered">
+    <h1>Lista dokumentów</h1>
+</div>
+
+<div class="search-form">
+    <form method="get">
+        <input type="text" name="q" value="{{ query|default:'' }}" class="search-input" placeholder="Szukaj dokumentów...">
+        <button type="submit" class="search-button">Szukaj</button>
+    </form>
+</div>
+
+{% if page_obj %}
+    <table class="document-list">
+        <thead>
+            <tr>
+                <th><a href="?sort={% if request.GET.sort == 'title' %}-{% endif %}title{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="sort-link">Nazwa dokumentu {% if request.GET.sort == 'title' %}▲{% elif request.GET.sort == '-title' %}▼{% endif %}</a></th>
+                <th><a href="?sort={% if request.GET.sort == 'created_at' %}-{% endif %}created_at{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="sort-link">Data dodania {% if request.GET.sort == 'created_at' %}▲{% elif request.GET.sort == '-created_at' %}▼{% endif %}</a></th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for document in page_obj %}
+            <tr>
+                <td>{{ document.title }}</td>
+                <td>{{ document.created_at|date:"d-m-Y H:i" }}</td>
+                <td>
+                    <a href="{% url 'documents:delete_document' document.id %}"
+                       class="delete-button"
+                       onclick="return confirm('Czy na pewno chcesz usunąć ten dokument?');">
+                        Usuń
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="centered">
+        <a href="{% url 'documents:upload_document' %}" class="add-button">Dodaj nowy dokument</a>
+    </div>
+
+    <div class="controls">
+        <span class="pagination-button">
+            Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }}
+        </span>
+    </div>
+{% else %}
+    <p>Brak dokumentów do wyświetlenia.</p>
+{% endif %}
+
+{% endblock %}

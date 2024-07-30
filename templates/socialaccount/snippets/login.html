@@ -1,0 +1,16 @@
+{% load i18n %}
+{% load allauth %}
+{% load socialaccount %}
+{% get_providers as socialaccount_providers %}
+{% if socialaccount_providers %}
+    {% if not SOCIALACCOUNT_ONLY %}
+        <hr>
+    {% endif %}
+    <div class="social-login">
+        <h2 class="text-center mt-3 mb-3"></h2>
+        <div class="d-flex justify-content-center">
+            {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+        </div>
+        {% include "socialaccount/snippets/login_extra.html" %}
+    </div>
+{% endif %}

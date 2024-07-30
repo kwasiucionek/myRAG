@@ -1,0 +1,58 @@
+{% extends "account/base_entrance.html" %}
+{% load i18n %}
+{% load allauth account %}
+{% block head_title %}
+    {% trans "Sign In" %}
+{% endblock head_title %}
+{% block content %}
+<div class="container content mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h1>{% trans "Sign In" %}</h1>
+                </div>
+                <div class="card-body">
+                    {% if not SOCIALACCOUNT_ONLY %}
+                        {% setvar link %}
+                            <a href="{{ signup_url }}">
+                        {% endsetvar %}
+                        {% setvar end_link %}
+                            </a>
+                        {% endsetvar %}
+                        <p class="text-center">
+                            {% blocktranslate %}If you have not created an account yet, then please {{ link }}sign up{{ end_link }} first.{% endblocktranslate %}
+                        </p>
+                        {% url 'account_login' as login_url %}
+                        <form method="post" action="{{ login_url }}">
+                            {% csrf_token %}
+                            {% element fields form=form unlabeled=True %}
+                            {% endelement %}
+                            {{ redirect_field }}
+                            <div class="text-center mt-3">
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    <i class="fas fa-sign-in-alt"></i> {% trans "Sign In" %}
+                                </button>
+                            </div>
+                        </form>
+                    {% endif %}
+                    {% if LOGIN_BY_CODE_ENABLED %}
+                        <hr>
+                        <h2 class="text-center mt-3">
+                            <a href="{{ request_login_code_url }}" class="btn btn-secondary btn-block">
+                                <i class="fas fa-envelope"></i> {% trans "Mail me a sign-in code" %}
+                            </a>
+                        </h2>
+                    {% endif %}
+                </div>
+                <div class="card-footer text-center">
+                    {% if SOCIALACCOUNT_ENABLED %}
+                        <p>{% trans "Or sign in with" %}</p>
+                        {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
